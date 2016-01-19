@@ -76,11 +76,11 @@ class ConferenceApi(remote.Service):
         """Return user Profile from datastore, creating new one if non-existent."""
         ## TODO 2
         ## step 1: make sure user is authed
-        ## uncomment the following lines:
-        # user = endpoints.get_current_user()
-        # if not user:
-        #     raise endpoints.UnauthorizedException('Authorization required')
+        user = endpoints.get_current_user()
+        print user # TODO: why no print
         profile = None
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
         ## step 2: create a new Profile from logged in user data
         ## you can use user.nickname() to get displayName
         ## and user.email() to get mainEmail
@@ -88,12 +88,11 @@ class ConferenceApi(remote.Service):
             profile = Profile(
                 userId = None,
                 key = None,
-                displayName = "Test",
-                mainEmail= None,
+                displayName = user.nickname(),
+                mainEmail= user.email(),
                 teeShirtSize = str(TeeShirtSize.NOT_SPECIFIED),
             )
-
-        return profile      # return Profile
+            return profile
 
 
     def _doProfile(self, save_request=None):
