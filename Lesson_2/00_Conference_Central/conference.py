@@ -33,6 +33,13 @@ from models import TeeShirtSize
 
 from settings import WEB_CLIENT_ID
 
+# WRONG:some of protorpc.messages ' message field classes
+# REQUEST_CONTAINER = endpoints.ResourceContainer(
+#     message_types.VoidMessage,
+#     displayName=messages.StringField(1),
+#     teeShirtSize=messages.EnumField(2),
+# )
+
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
 
@@ -51,9 +58,12 @@ class ConferenceApi(remote.Service):
         """Copy relevant fields from Profile to ProfileForm."""
         # copy relevant fields from Profile to ProfileForm
         pf = ProfileForm()
+        print pf
         for field in pf.all_fields():
             if hasattr(prof, field.name):
                 # convert t-shirt string to Enum; just copy others
+                # getattr(object, name[, default]):Return the value of the named attr. or default
+                # setattr(object, name, value)
                 if field.name == 'teeShirtSize':
                     setattr(pf, field.name, getattr(TeeShirtSize, getattr(prof, field.name)))
                 else:
@@ -78,7 +88,7 @@ class ConferenceApi(remote.Service):
             profile = Profile(
                 userId = None,
                 key = None,
-                displayName = "Test", 
+                displayName = "Test",
                 mainEmail= None,
                 teeShirtSize = str(TeeShirtSize.NOT_SPECIFIED),
             )
@@ -112,12 +122,14 @@ class ConferenceApi(remote.Service):
     # TODO 1
     # 1. change request class
     # 2. pass request to _doProfile function
-    @endpoints.method(message_types.VoidMessage, ProfileForm,
+    @endpoints.method(ProfileMiniForm, ProfileForm,
             path='profile', http_method='POST', name='saveProfile')
     def saveProfile(self, request):
         """Update & return user profile."""
-        return self._doProfile()
+        # save_request = {request.displayName,request.teeShirtSize}
+        # return self._doProfile(save_request=save_request)
+        return self._doProfile(request)
 
 
 # registers API
-api = endpoints.api_server([ConferenceApi]) 
+api = endpoints.api_server([ConferenceApi])
