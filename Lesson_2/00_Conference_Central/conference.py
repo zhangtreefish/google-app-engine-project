@@ -14,16 +14,12 @@ __author__ = 'wesc+api@google.com (Wesley Chun)'
 
 
 from datetime import datetime
-import json
-import os
-import time
 
 import endpoints
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 
-from google.appengine.api import urlfetch
 from google.appengine.ext import ndb
 
 from models import Profile
@@ -32,18 +28,13 @@ from models import ProfileForm
 from models import TeeShirtSize
 
 from settings import WEB_CLIENT_ID
-
-# WRONG:some of protorpc.messages ' message field classes
-# REQUEST_CONTAINER = endpoints.ResourceContainer(
-#     message_types.VoidMessage,
-#     displayName=messages.StringField(1),
-#     teeShirtSize=messages.EnumField(2),
-# )
+from utils import getUserId
 
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 
 @endpoints.api( name='conference',
                 version='v1',
@@ -58,12 +49,9 @@ class ConferenceApi(remote.Service):
         """Copy relevant fields from Profile to ProfileForm."""
         # copy relevant fields from Profile to ProfileForm
         pf = ProfileForm()
-        print pf
         for field in pf.all_fields():
             if hasattr(prof, field.name):
                 # convert t-shirt string to Enum; just copy others
-                # getattr(object, name[, default]):Return the value of the named attr. or default
-                # setattr(object, name, value)
                 if field.name == 'teeShirtSize':
                     setattr(pf, field.name, getattr(TeeShirtSize, getattr(prof, field.name)))
                 else:
@@ -74,25 +62,34 @@ class ConferenceApi(remote.Service):
 
     def _getProfileFromUser(self):
         """Return user Profile from datastore, creating new one if non-existent."""
-        ## TODO 2
-        ## step 1: make sure user is authed
         user = endpoints.get_current_user()
-        print user # TODO: why no print
-        profile = None
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
-        ## step 2: create a new Profile from logged in user data
-        ## you can use user.nickname() to get displayName
-        ## and user.email() to get mainEmail
+
+        # TODO 1
+        # step 1. copy utils.py from additions folder to this folder
+        #         and import getUserId from it
+        # step 2. get user id by calling getUserId(user)
+        user_id = getUserId(user)
+        # step 3. create a new key of kind Profile from the id
+        pro_key = ndb.Key(Profile, user_id)
+
+        # TODO 3
+        # get the entity from datastore by using get() on the key
+        profile = pro_key.get()
+
         if not profile:
             profile = Profile(
-                userId = None,
-                key = None,
+                key = None, # TODO 1 step 4. replace with the key from step 3
                 displayName = user.nickname(),
                 mainEmail= user.email(),
                 teeShirtSize = str(TeeShirtSize.NOT_SPECIFIED),
             )
-            return profile
+            # TODO 2
+            # save the profile to datastore
+            profile.put()
+
+        return profile      # return Profile
 
 
     def _doProfile(self, save_request=None):
@@ -107,6 +104,9 @@ class ConferenceApi(remote.Service):
                     val = getattr(save_request, field)
                     if val:
                         setattr(prof, field, str(val))
+            # TODO 4
+            # put the modified profile to datastore
+            prof.put()
 
         # return ProfileForm
         return self._copyProfileToForm(prof)
@@ -118,15 +118,11 @@ class ConferenceApi(remote.Service):
         """Return user profile."""
         return self._doProfile()
 
-    # TODO 1
-    # 1. change request class
-    # 2. pass request to _doProfile function
+
     @endpoints.method(ProfileMiniForm, ProfileForm,
             path='profile', http_method='POST', name='saveProfile')
     def saveProfile(self, request):
         """Update & return user profile."""
-        # save_request = {request.displayName,request.teeShirtSize}
-        # return self._doProfile(save_request=save_request)
         return self._doProfile(request)
 
 
