@@ -14,7 +14,7 @@ __author__ = 'wesc+api@google.com (Wesley Chun)'
 
 
 from datetime import datetime
-
+import logging
 import endpoints
 from protorpc import messages
 from protorpc import message_types
@@ -136,6 +136,7 @@ class ConferenceApi(remote.Service):
             path='profile', http_method='POST', name='saveProfile')
     def saveProfile(self, request):
         """Update & return user profile."""
+        logging.info('saving your profile')
         return self._doProfile(request)
 
 # - - - Conference objects - - - - - - - - - - - - - - - - -
