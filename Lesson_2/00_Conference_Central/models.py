@@ -39,19 +39,19 @@ class Conference(ndb.Model):
     seatsAvailable = ndb.IntegerProperty()
 
 class ProfileMiniForm(messages.Message):
-    """ProfileMiniForm -- update Profile form message"""
+    """ProfileMiniForm as request object-- update Profile form message"""
     displayName = messages.StringField(1)
     teeShirtSize = messages.EnumField('TeeShirtSize', 2)
 
 class ProfileForm(messages.Message):
-    """ProfileForm -- Profile outbound form message"""
+    """ProfileForm as response object-- Profile outbound form message"""
     userId = messages.StringField(1)
     displayName = messages.StringField(2)
     mainEmail = messages.StringField(3)
     teeShirtSize = messages.EnumField('TeeShirtSize', 4)
 
 class ConferenceForm(messages.Message):
-    """Conference outbound form message"""
+    """Conference outbound form message as response object"""
     name            = messages.StringField(1)
     description     = messages.StringField(2)
     organizerUserId = messages.StringField(3)
@@ -66,17 +66,17 @@ class ConferenceForm(messages.Message):
     organizerDisplayName = messages.StringField(12)
 
 class ConferenceForms(messages.Message):
-    """ConferenceForms -- multiple Conference outbound form message"""
+    """ConferenceForms -- multiple Conference outbound form message as response object"""
     items = messages.MessageField(ConferenceForm, 1, repeated=True)
 
 class ConferenceQueryForm(messages.Message):
-    """ConferenceQueryForm -- Conference query inbound form message"""
+    """ConferenceQueryForm as request object-- Conference query inbound form message"""
     field = messages.StringField(1)
     operator = messages.StringField(2)
     value = messages.StringField(3)
 
 class ConferenceQueryForms(messages.Message):
-    """ConferenceQueryForms -- multiple ConferenceQueryForm inbound form message"""
+    """ConferenceQueryForms as request object-- multiple ConferenceQueryForm inbound form message"""
     filters = messages.MessageField(ConferenceQueryForm, 1, repeated=True)
 
 class TeeShirtSize(messages.Enum):
