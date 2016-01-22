@@ -4,6 +4,10 @@ runtime: python27
 api_version: 1
 threadsafe: yes
 
+# To map Appstats to the default directory (/_ah/stats/)
+builtins:
+- appstats: on
+
 handlers:       # static then dynamic
 
 - url: /favicon\.ico
