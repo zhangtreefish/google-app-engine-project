@@ -19,7 +19,7 @@ import endpoints
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
-from protorpc import query
+# from protorpc import query
 
 from google.appengine.ext import ndb
 
@@ -29,7 +29,7 @@ from models import ProfileForm
 from models import TeeShirtSize
 
 from settings import WEB_CLIENT_ID
-from utils import getUserId
+from additions.utils import getUserId
 from models import Conference
 from models import ConferenceForm
 
@@ -220,9 +220,9 @@ class ConferenceApi(remote.Service):
                 path='queryConferences',
                 http_method='POST',
                 name='queryConferences')
-    def queryConferences(self, request):
+    def queryConferences(self,request):
         """Query for conferences."""
-        conferences = Conference.query().fetch()
+        conferences = Conference.query().fetch() # is fetch needed?
 
          # return individual ConferenceForm object per Conference
         return ConferenceForms(
@@ -230,5 +230,48 @@ class ConferenceApi(remote.Service):
             for conf in conferences]
         )
 
+    # @endpoints.method(message_types.VoidMessage, ConferenceForms,
+    #                     path='queryConferencesCreated',
+    #                     http_method='POST',
+    #                     name='queryConferencesCreated'
+    #                     )
+    # def queryConferencesCreated(self,request):
+    #     """get conferenced created by the user"""
+    #     user = endpoints.get_current_user()
+    #     if not user:
+    #         raise endpoints.UnauthorizedException('Authorization required')
+
+    #     user_id = getUserId(user)
+    #     p_key = ndb.Key(Profile,user_id)
+
+    #     conferences = Conference.query(ancestor=p_key)
+    #     # get the user profile and display name
+    #     prof = p_key.get()
+    #     displayName = getattr(prof, 'displayName')
+    #     return ConferenceForms(
+    #         items=[self._copyConferenceToForm(conf, displayName) \
+    #         for conf in conferences])
+
+    @endpoints.method(message_types.VoidMessage, ConferenceForms,
+        path='getConferencesCreated',
+        http_method='POST', name='getConferencesCreated')
+    def getConferencesCreated(self, request):
+        """Return conferences created by user."""
+        # make sure user is authed
+        user = endpoints.get_current_user()
+        if not user:
+            raise endpoints.UnauthorizedException('Authorization required')
+
+        # make profile key
+        p_key = ndb.Key(Profile, getUserId(user))
+        # create ancestor query for this user
+        conferences = Conference.query(ancestor=p_key)
+        # get the user profile and display name
+        prof = p_key.get()
+        displayName = getattr(prof, displayName)
+        # return set of ConferenceForm objects per Conference
+        return ConferenceForms(
+            items=[self._copyConferenceToForm(conf, displayName) for conf in conferences]
+        )
 # registers API
 api = endpoints.api_server([ConferenceApi])
