@@ -20,10 +20,11 @@ from google.appengine.ext import ndb
 
 class Profile(ndb.Model):
     """Profile -- User profile object"""
-    userId = ndb.StringProperty()
+    userId = ndb.StringProperty()  # Should  Id be here or not?
     displayName = ndb.StringProperty()
     mainEmail = ndb.StringProperty()
     teeShirtSize = ndb.StringProperty(default='NOT_SPECIFIED')
+    conferenceKeysToAttend = ndb.StringProperty(repeated=True)
 
 class Conference(ndb.Model):
     """Conference kind, to generate conference entitie with"""
@@ -96,3 +97,12 @@ class TeeShirtSize(messages.Enum):
     XXL_W = 13
     XXXL_M = 14
     XXXL_W = 15
+
+# needed for conference registration
+class BooleanMessage(messages.Message):
+    """BooleanMessage-- outbound Boolean value message"""
+    data = messages.BooleanField(1)
+
+class ConflictException(endpoints.ServiceException):
+    """ConflictException -- exception mapped to HTTP 409 response"""
+    http_status = httplib.CONFLICT
