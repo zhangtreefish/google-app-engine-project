@@ -44,6 +44,8 @@ from google.appengine.api import memcache
 from models import StringMessage
 from google.appengine.ext import db
 
+from google.appengine.api import taskqueue
+
 EMAIL_SCOPE = endpoints.EMAIL_SCOPE
 API_EXPLORER_CLIENT_ID = endpoints.API_EXPLORER_CLIENT_ID
 DEFAULTS = {
@@ -74,6 +76,8 @@ CONF_GET_REQUEST = endpoints.ResourceContainer(
 )
 
 MEMCACHE_ANNOUNCEMENTS_KEY = "Recent Announcements"
+
+from google.appengine.api import taskqueue
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
@@ -235,6 +239,10 @@ class ConferenceApi(remote.Service):
 
         # create Conference & return (modified) ConferenceForm
         Conference(**data).put()
+        taskqueue.add(params={'email': user.email(),
+            'conferenceInfo': repr(request)},
+            url='/tasks/send_confirmation_email'
+        )
 
         return request
 
@@ -460,7 +468,7 @@ class ConferenceApi(remote.Service):
         confs = Conference.query(ndb.AND(
             Conference.seatsAvailable <= 5,
             Conference.seatsAvailable > 0)
-        ) # TODO:.fetch(projection=[Conference.name])
+        ) # TODO:get or.fetch(projection=[Conference.name])
         if confs:
             # If there are almost sold out conferences,
             # format announcement and set it in memcache
@@ -491,6 +499,7 @@ class ConferenceApi(remote.Service):
         if not announcement:
             announcement = ""
         return StringMessage(data=announcement)
+
 
 # registers API
 api = endpoints.api_server([ConferenceApi])
