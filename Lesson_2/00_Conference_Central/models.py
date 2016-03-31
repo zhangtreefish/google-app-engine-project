@@ -8,26 +8,29 @@ $Id: models.py,v 1.1 2014/05/24 22:01:10 wesc Exp $
 
 created/forked from conferences.py by wesc on 2014 may 24
 
-"""
+modified by zhangs"""
 
-__author__ = 'wesc+api@google.com (Wesley Chun)'
+__author__ = 'wesc+api@google.com (Wesley Chun), modified by zhangs'
 
 import httplib
 import endpoints
 from protorpc import messages
 from google.appengine.ext import ndb
 
+class ConflictException(endpoints.ServiceException):
+    """ConflictException -- exception mapped to HTTP 409 response"""
+    http_status = httplib.CONFLICT
 
 class Profile(ndb.Model):
     """Profile -- User profile object"""
-    userId = ndb.StringProperty()  # Should  Id be here or not?
+    # userId = ndb.StringProperty()  # Should  Id be here or not?
     displayName = ndb.StringProperty()
     mainEmail = ndb.StringProperty()
     teeShirtSize = ndb.StringProperty(default='NOT_SPECIFIED')
     conferenceKeysToAttend = ndb.StringProperty(repeated=True)
 
 class Conference(ndb.Model):
-    """Conference kind, to generate conference entitie with"""
+    """Conference kind, to generate conference entities with"""
     name = ndb.StringProperty(required=True)
     description = ndb.StringProperty()
     organizerUserId = ndb.StringProperty()
@@ -106,7 +109,3 @@ class TeeShirtSize(messages.Enum):
 class BooleanMessage(messages.Message):
     """BooleanMessage-- outbound Boolean value message"""
     data = messages.BooleanField(1)
-
-class ConflictException(endpoints.ServiceException):
-    """ConflictException -- exception mapped to HTTP 409 response"""
-    http_status = httplib.CONFLICT
