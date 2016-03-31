@@ -77,9 +77,6 @@ CONF_GET_REQUEST = endpoints.ResourceContainer(
 
 MEMCACHE_ANNOUNCEMENTS_KEY = "Recent Announcements"
 
-from google.appengine.api import taskqueue
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 
 @endpoints.api( name='conference',
                 version='v1',
@@ -91,9 +88,10 @@ class ConferenceApi(remote.Service):
 # - - - Profile objects - - - - - - - - - - - - - - - - - - -
 
     def _copyProfileToForm(self, prof):
-        """Copy relevant fields from Profile to ProfileForm."""
-        # copy relevant fields from Profile to ProfileForm
+        """Copy relevant fields from Profile 'prof' to ProfileForm."""
         pf = ProfileForm()
+        # all_fields: Gets all field definition objects. Returns an iterator
+        # over all values in arbitrary order.
         for field in pf.all_fields():
             if hasattr(prof, field.name):
                 # convert t-shirt string to Enum; just copy others
@@ -107,9 +105,13 @@ class ConferenceApi(remote.Service):
 
     def _getProfileFromUser(self):
         """Return user Profile from datastore, creating new one if non-existent."""
+        # If the incoming method has a valid auth or ID token, endpoints.get_current_user()
+        # returns a User, otherwise it returns None.
         user = endpoints.get_current_user()
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
+        # if raise_unauthorized and user is None:
+        #     raise endpoints.UnauthorizedException('Invalid token.')
 
         # TODO 1
         # step 1. copy utils.py from additions folder to this folder
@@ -243,7 +245,6 @@ class ConferenceApi(remote.Service):
             'conferenceInfo': repr(request)},
             url='/tasks/send_confirmation_email'
         )
-
         return request
 
 
@@ -252,6 +253,7 @@ class ConferenceApi(remote.Service):
     def createConference(self, request):
         """Create new conference."""
         return self._createConferenceObject(request)
+
 
     @endpoints.method(ConferenceQueryForms, ConferenceForms,
                 path='queryConferences',
