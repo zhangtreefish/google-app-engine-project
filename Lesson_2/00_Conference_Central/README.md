@@ -12,11 +12,11 @@ App Engine application for the Udacity training course.
 ## Setup
 1. registered in the App Engine admin console, get application-id
 2. Update the value of `application` in `app.yaml` to the application-id
-3. Go to your Google Developers Console, Select your project
+3. Go to your Google [Developer Console][4], Select your project
   -- select Enable and manage APIs
   -- select Credentials from the left-hand column
   -- Follow the instructions below for updating the user consent screen and creating the correct
-     credentials
+     credentials [Creating an OAuth 2.0 web client ID][7]
     -- User Consent Screen
       -- Click the OAuth consent screen tab
       -- Select an Email address that you want associated with the app
@@ -26,16 +26,13 @@ App Engine application for the Udacity training course.
 	-- Click the Credentials tab
 		-- Select Add credentials and choose OAuth 2.0 client ID
 		-- Select Web application for the Application type
-		-- In the Authorized JavaScript origins field include these two URLs: https://YOUR_PROJECT_ID.appspot.com/ and http://localhost:8080/ (be sure to replace 8080 with the port for your application)
+		-- In the Authorized JavaScript origins field include these two URLs: https://YOUR_PROJECT_ID.appspot.com/ and http://localhost:8080 (be sure to replace 8080 with the port for your application)
 		-- In the Authorized redirect URIs field include these two URLs: https://YOUR_PROJECT_ID.appspot.com/oauth2callback and http://localhost:8080/oauth2callback (be sure to replace 8080 with the port for your application)
-		-- Click Create
-    -- Final Step
-
+		-- Click Create, receiving client id and client secret.
+4. Update the values at the top of `settings.py` to reflect the respective client IDs.
       -- Copy the long client ID that ends with "googleusercontent.com""
-      -- Go to your settings.py file
-      -- Replace the string 'replace with Web client ID' with your client ID as a string
-         Save settings.py
-4. Update the values at the top of `settings.py` to reflect the respective client IDs you have registered in the [Developer Console][4].
+      -- Go to your settings.py file, replace the string 'replace with Web client ID' with your
+         client ID as a string; save settings.py
 5. Update the value of CLIENT_ID in `static/js/app.js` to the Web client ID
 6. (Optional) Mark the configuration files as unchanged as follows:
    `$ git update-index --assume-unchanged app.yaml settings.py static/js/app.js`
@@ -54,3 +51,5 @@ App Engine application for the Udacity training course.
 [4]: https://console.developers.google.com/
 [5]: https://localhost:8080/
 [6]: https://developers.google.com/appengine/docs/python/endpoints/endpoints_tool
+[7]: https://cloud.google.com/appengine/docs/python/endpoints/auth
+[8]: http://lifehacker.com/compare-the-contents-of-two-folders-with-the-diff-comma-598872057
