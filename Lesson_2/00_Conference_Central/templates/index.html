@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/offcanvas.css">
     <link rel="shortcut icon" href="/img/favicon.ico">
+    <!-- The Open Graph protocol enables any web page to become a rich object in a social graph. For instance, this is used on Facebook to allow any web page to have the same functionality as any other object on Facebook -->
     <meta property="og:title" content="Conference Central">
     <meta property="og:type" content="website">
     <meta property="og:description" content="Conference Central web app that lets you manage conferences.">
@@ -23,8 +24,9 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.js"></script>
     <script>
         /**
-         * Initializes the Google API JavaScript client. Bootstrap the angular module after loading the Google libraries
-         * so that Google JavaScript library ready in the angular modules.
+         * gapi.client.load(name, version, callback)Loads the client library interface to a particular API. The loaded API interface will be in the form gapi.client.api.collection.method
+         Bootstrap the angular module after loading the Google libraries so that Google JavaScript library is ready in the angular modules.
+         angular.bootstrap(element, [modules], [config]):to manually start up angular application
          */
         function init() {
             gapi.client.load('conference', 'v1', null, '//' + window.location.host + '/_ah/api');
