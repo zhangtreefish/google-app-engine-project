@@ -63,12 +63,12 @@ conferenceApp.controllers.controller('MyProfileCtrl',
             var retrieveProfileCallback = function () {
                 $scope.profile = {};
                 $scope.loading = true;
-                gapi.client.conference.getProfile().
-                    execute(function (resp) {
+                gapi.client.conference.getProfile().execute(function (resp) {
                         $scope.$apply(function () {
                             $scope.loading = false;
                             if (resp.error) {
                                 // Failed to get a user profile.
+                                console.log('no profile');
                             } else {
                                 // Succeeded to get the user profile.
                                 $scope.profile.displayName = resp.result.displayName;
@@ -76,8 +76,7 @@ conferenceApp.controllers.controller('MyProfileCtrl',
                                 $scope.initialProfile = resp.result;
                             }
                         });
-                    }
-                );
+                    });
             };
             if (!oauth2Provider.signedIn) {
                 var modalInstance = oauth2Provider.showLoginModal();
