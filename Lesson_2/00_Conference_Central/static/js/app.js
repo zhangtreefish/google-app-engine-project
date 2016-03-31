@@ -9,7 +9,7 @@
  *
  * @description
  * Root app, which routes and specifies the partial html and controller depending on the url requested.
- *
+ * when(path, route): Adds a new route definition to the $route service.
  */
 var app = angular.module('conferenceApp',
     ['conferenceControllers', 'ngRoute', 'ui.bootstrap']).
@@ -86,7 +86,7 @@ app.constant('HTTP_ERRORS', {
  */
 app.factory('oauth2Provider', function ($modal) {
     var oauth2Provider = {
-        CLIENT_ID: '47174006042-hkms0q2ud7c5tc2t4n5euhhprc5qp94k.apps.googleusercontent.com',
+        CLIENT_ID: '174131492121-1hplaud8jalbv9edkkl2umg1of48dtd7.apps.googleusercontent.com',
         SCOPES: 'email profile',
         signedIn: false
     }
