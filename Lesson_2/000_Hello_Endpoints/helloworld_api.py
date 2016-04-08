@@ -42,13 +42,13 @@ class HelloWorldApi(remote.Service):
     @endpoints.method(REQUEST_CONTAINER, HelloResponse,
         path = "sayHelloByName", http_method='GET', name = "sayHelloByName")
     def say_hello_by_name(self, request):
-        greet = "Guten {}".format(request.name)
+        greet = "Hello {}".format(request.name)
         return HelloResponse(greeting=greet)
 
     @endpoints.method(REQUEST_GREET_CONTAINER, HelloResponse,
       path = "sayHelloByPeriod", http_method='GET', name = "sayHelloByPeriod")
     def say_hello_by_period(self, request):
-        greet = "Guten {} {}".format(request.period,request.name)
+        greet = "Guten {} {}!".format(request.period,request.name)
         return HelloResponse(greeting=greet)
 
 

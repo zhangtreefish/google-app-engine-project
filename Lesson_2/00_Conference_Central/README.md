@@ -11,8 +11,8 @@ App Engine application for the Udacity training course.
 
 ## Setup
 1. registered in the App Engine admin console, get application-id
-2. Update the value of `application` in `app.yaml` to the application-id
-3. Go to your Google [Developer Console][4], Select your project
+2. Update the value of `application` in `app.yaml` to the application-id 'conference-2016'
+3. Go to Google [Developer Console][4], select my project 'conference'
   -- select Enable and manage APIs
   -- select Credentials from the left-hand column
   -- Follow the instructions below for updating the user consent screen and creating the correct

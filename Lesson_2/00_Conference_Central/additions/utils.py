@@ -13,7 +13,8 @@ def getUserId(user, id_type="email"):
     if id_type == "oauth":
         """A workaround implementation for getting userid."""
         auth = os.getenv('HTTP_AUTHORIZATION')
-        print 'auth:',auth
+        logging.info('here is auth:')
+        logging.info(auth)
         bearer, token = auth.split()
         token_type = 'id_token'
         if 'OAUTH_USER_ID' in os.environ:
@@ -39,6 +40,9 @@ def getUserId(user, id_type="email"):
         # implement your own user_id creation and getting algorythm
         # this is just a sample that queries datastore for an existing profile
         # and generates an id if profile does not exist for an email
+        # uuid.uuid1([node[, clock_seq]]): Generate a UUID object from a host
+        # ID, sequence number, and the current time.
+
         profile = Conference.query(Conference.mainEmail == user.email())
         if profile:
             return profile.id()

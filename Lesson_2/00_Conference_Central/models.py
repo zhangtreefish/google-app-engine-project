@@ -23,7 +23,7 @@ class ConflictException(endpoints.ServiceException):
 
 class Profile(ndb.Model):
     """Profile -- User profile object"""
-    # userId = ndb.StringProperty()  # Should  Id be here or not?
+    # Id = ndb.StringProperty()  # Should  Id be here or not?
     displayName = ndb.StringProperty()
     mainEmail = ndb.StringProperty()
     teeShirtSize = ndb.StringProperty(default='NOT_SPECIFIED')

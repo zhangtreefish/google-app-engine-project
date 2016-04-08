@@ -23,7 +23,7 @@ function init() {
 
 	// Load the helloworldendpoints API
 	// If loading completes successfully, call loadCallback function
-	gapi.client.load('helloworldendpoints', 'v1', loadCallback, rootpath);
+	gapi.client.load('helloworldendpoints', 'v6', loadCallback, rootpath);
 }
 
 /*

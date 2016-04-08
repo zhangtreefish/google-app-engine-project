@@ -217,6 +217,10 @@ class ConferenceApi(remote.Service):
 
         # convert dates from strings to Date objects; set month based on start_date
         if data['startDate']:
+            logging.info('date')
+            logging.info(data['startDate'])
+            print 'date', data['startDate']
+            # datetime.date(): Return date object (y,m,d) to comply with DateProperty.
             data['startDate'] = datetime.strptime(data['startDate'][:10], "%Y-%m-%d").date()
             data['month'] = data['startDate'].month
         else:
@@ -233,6 +237,8 @@ class ConferenceApi(remote.Service):
         # make Profile Key from user ID
         p_key = ndb.Key(Profile, user_id)
         # allocate new Conference ID with Profile key as parent
+        # allocate_ids(size=None, max=None, parent=None, **ctx_options)
+        # returns a tuple with (start, end) for the allocated range, inclusive.
         c_id = Conference.allocate_ids(size=1, parent=p_key)[0]
         # make Conference key from ID
         c_key = ndb.Key(Conference, c_id, parent=p_key)
@@ -240,6 +246,8 @@ class ConferenceApi(remote.Service):
         data['organizerUserId'] = request.organizerUserId = user_id
 
         # create Conference & return (modified) ConferenceForm
+        #  ** means that  kw is initialized to a new dictionary receiving any
+        # excess keyword arguments
         Conference(**data).put()
         taskqueue.add(params={'email': user.email(),
             'conferenceInfo': repr(request)},
@@ -344,7 +352,7 @@ class ConferenceApi(remote.Service):
 
 
     def _formatFilters(self, filters):
-        """Parse, check validity and format user supplied filters."""
+        """Parse, check validity and format user-supplied filters."""
         formatted_filters = []
         inequality_field = None
 
